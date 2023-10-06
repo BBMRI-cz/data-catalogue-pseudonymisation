@@ -383,6 +383,7 @@ class FindClinicalInfo:
         """
 
         clinical_data = []
+        predictive_number = self._fix_predictive_number(predictive_number)
         for export in os.listdir(self.export_path):
             export_path = os.path.join(self.export_path, export)
             tree = ET.parse(export_path)
@@ -391,8 +392,7 @@ class FindClinicalInfo:
             found_predictive = False
             sample_data = []
             for child in lts:
-                if ("/" in child.attrib["predictive_number"] and
-                self._fix_predictive_number(child.attrib["predictive_number"]) == predictive_number):
+                if ("/" in child.attrib["predictive_number"] and child.attrib["predictive_number"] == predictive_number):
                     found_predictive = True
                     if "tissue" in child.tag:
                         sample_data.append(Tissue(child, pseudo_number, self.pseudo_sample_table_path))
@@ -411,6 +411,7 @@ class FindClinicalInfo:
                 clinical_data.append(patient)
         return clinical_data
 
+
     def _fix_predictive_number(self, predictive_number):
         """Unifies predictive number format
         Parameters
@@ -423,10 +424,14 @@ class FindClinicalInfo:
         predictive_formated : str
             Predictive number in adjusted format
         """
-        part1 = predictive_number.split("/")[0][2:]
-        part2 = predictive_number.split("/")[1]
-        predictive_formated = f"{part2}-{part1}"
-        return predictive_formated
+        if "_" in predictive_number and len(predictive_number.split("_")) == 2:
+            year, number = predictive_number.split("_")
+            predictive_number = f"{year}/{number}"
+        elif "-" in predictive_number and len(predictive_number.split("-")) == 2:
+            number, year = predictive_number.split("-")
+            predictive_number = f"20{year}/{number}"
+
+        return predictive_number
 
     def _generate_pseudo_patient_id(self, original_ID):
         data = {"patients":[]}

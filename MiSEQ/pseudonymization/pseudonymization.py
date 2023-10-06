@@ -99,9 +99,10 @@ class Pseudonymizer:
 
 
         predictive_numbers = sample_list_header[id:]
+        predictive_numbers_original = predictive_numbers
         predictive_numbers = [predictive_number.replace("_", "-") for predictive_number in predictive_numbers]
 
-        clinical_info_finder = FindClinicalInfo(self.export_path, predictive_numbers, self.pseudonimisation_tables_path, self.run_path)
+        clinical_info_finder = FindClinicalInfo(self.export_path, predictive_numbers_original, self.pseudonimisation_tables_path, self.run_path)
         clinical_info_finder()
         pseudo_list = clinical_info_finder.get_pseudo_ids()
 
