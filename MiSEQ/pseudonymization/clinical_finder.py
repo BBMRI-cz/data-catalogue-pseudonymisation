@@ -236,9 +236,13 @@ class FindClinicalInfo:
         with open(clinical_info_path, "w") as f:
             json.dump(self._convert_collection_to_dict(clinical_data), f, indent=4)
         
+        if not os.path.exists(os.path.join(self.run_path, "catalog_info_per_pred_number")):
+            os.mkdir(os.path.join(self.run_path, "catalog_info_per_pred_number"))
+
         for patient in clinical_data:
             patient.samples = self._get_samples_with_unique_predictive_number(patient.samples)
             new_patient = Patient(patient.ID, patient.birth, patient.sex, [])
+
 
             for sample in patient.samples:
                 new_patient.samples = [sample]
@@ -246,8 +250,6 @@ class FindClinicalInfo:
                 catalog_info_path = os.path.join(self.run_path,
                                                 "catalog_info_per_pred_number",
                                                 f"{pac_dict_for_catalogue['samples'][0]['pseudo_ID']}.json")
-                if not os.path.exists(os.path.join(self.run_path, "catalog_info_per_pred_number")):
-                    os.mkdir(os.path.join(self.run_path, "catalog_info_per_pred_number"))
             
                 with open(catalog_info_path, "w") as f:
                     json.dump(pac_dict_for_catalogue, f, indent=4)
@@ -386,7 +388,11 @@ class FindClinicalInfo:
         predictive_number = self._fix_predictive_number(predictive_number)
         for export in os.listdir(self.export_path):
             export_path = os.path.join(self.export_path, export)
-            tree = ET.parse(export_path)
+            try:
+                tree = ET.parse(export_path)
+            except ET.ParseError:
+                print("Cant open XML", export_path)
+                continue
             root = tree.getroot()
             lts = root.find(f"{Material.xml_prefix}LTS")
             found_predictive = False
