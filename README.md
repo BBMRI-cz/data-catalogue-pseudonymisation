@@ -15,12 +15,12 @@ Pseudonymisation itself consists of multiple Python and Bash scripts, the whole 
         - **remove_files.sh** - removes defined unnecessary files,
         - **pseudonymisation.py** - performs pseudonymisation creating class *Pseudonymizer* and using function ***pseudonymize_run()*** consisting of:
           >   - ***pseudo_sample_sheet_and_get_clinical_data()*** - which performs pseudonymisation of "Sample Sheet" file carrying IDs of sequenced samples and collects clinical data using class *FindClinicalInfo* defined within **clinical_finder.py** consisting of:
-          >>   - definition of the class *Material* (with properties pseudo_ID, biopsy_number, sample_ID, sample_number, available_samples_number, material_type) and function ***_generate_pseudo_sample_id()*** - which generates pseudo sample ID for selected predictive number in case it does not exist, otherwise it returns existing pseudo sample ID. The class *Material* has following subclasses:
+          >>   - class *Material* definition (with properties pseudo_ID, biopsy_number, sample_ID, sample_number, available_samples_number, material_type) and function ***_generate_pseudo_sample_id()*** - which generates pseudo sample ID for selected predictive number in case it does not exist, otherwise it returns existing pseudo sample ID. The class *Material* has following subclasses:
           >>     - Tissue (with properties material, pTNM, morphology, diagnosis, cut_time, freeze_time)
           >>     - Serum (with properties material, diagnosis, taking_date)
           >>     - Genome (with properties material, taking_date)
-          >>   - definition of class *Patient* (with properties ID, birth, sex, samples)
-          >>   - definition of class *FindClinicalInfo* (with properties export_path, predictive_numbers, pseudo_pred_table_path, pseudo_patient_table_path, pseudo_sample_table_path, run_path) and functions:
+          >>   - class *Patient* definition (with properties ID, birth, sex, samples)
+          >>   - class *FindClinicalInfo* definition (with properties export_path, predictive_numbers, pseudo_pred_table_path, pseudo_patient_table_path, pseudo_sample_table_path, run_path) and functions:
           >>>   - ***_collect_clinical_data()***
           >>>    - ***_add_pseudo_ID()***
           >>>    - ***_check_for_predictive_number_in_export()***
