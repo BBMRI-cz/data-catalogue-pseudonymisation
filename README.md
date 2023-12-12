@@ -1,10 +1,10 @@
 # data-catalogue-pseudonymisation
-This is the repository for the pseudonymisation part of the BBMRI.cz data catalog
+This is the repository for the pseudonymisation part of the BBMRI.cz data catalog.
 
 ## Pseudonymisation
 
 ### MiSEQ
-Pseudonymizes predictive numbers before moving the data to SensitiveCloud at ICS-MUNI
+Pseudonymizes predictive numbers, collects clinical data and removes unnecessary files before moving the data to SensitiveCloud at ICS-MUNI.
 
 Pseudonymisation itself consists of multiple Python and Bash scripts, the whole pipeline is defined within **pseudonymize_pipeline.sh**:
   1. it sets paths to important folders and files,
@@ -15,7 +15,7 @@ Pseudonymisation itself consists of multiple Python and Bash scripts, the whole 
         - **remove_files.sh** - removes defined unnecessary files,
         - **pseudonymisation.py** - performs pseudonymisation creating class *Pseudonymizer* and using function ***pseudonymize_run()*** consisting of:
           >   - ***pseudo_sample_sheet_and_get_clinical_data()*** - which performs pseudonymisation of "Sample Sheet" file carrying IDs of sequenced samples and collects clinical data using class *FindClinicalInfo* defined within **clinical_finder.py** consisting of:
-          >>   - definition of the class *Material* (with properties pseudo_ID, biopsy_number, sample_ID, sample_number, available_samples_number, material_type) and function ***_generate_pseudo_sample_id()*** - which generates pseudo sample ID for selected predictive number in case it does not exist, otherwise it returns existing pseudo sample ID with subclasses:
+          >>   - definition of the class *Material* (with properties pseudo_ID, biopsy_number, sample_ID, sample_number, available_samples_number, material_type) and function ***_generate_pseudo_sample_id()*** - which generates pseudo sample ID for selected predictive number in case it does not exist, otherwise it returns existing pseudo sample ID. The class *Material* has following subclasses:
           >>     - Tissue (with properties material, pTNM, morphology, diagnosis, cut_time, freeze_time)
           >>     - Serum (with properties material, diagnosis, taking_date)
           >>     - Genome (with properties material, taking_date)
