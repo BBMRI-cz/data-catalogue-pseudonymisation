@@ -65,12 +65,12 @@ class Pseudonymizer:
         3. Pseudonymizing file names
         """
 
-        predictive_pseudo_tuples = self.pseudo_sample_sheet_and_get_clinical_data()
+        predictive_pseudo_tuples = self._pseudo_sample_sheet_and_get_clinical_data()
         predictive_pseudo_tuples.sort(key=lambda a: len(a[0]), reverse=True)
-        self.create_temporary_pseudo_table(predictive_pseudo_tuples)
-        self.locate_all_files_with_predictive_number(predictive_pseudo_tuples)
+        self._create_temporary_pseudo_table(predictive_pseudo_tuples)
+        self._locate_all_files_with_predictive_number(predictive_pseudo_tuples)
 
-    def pseudo_sample_sheet_and_get_clinical_data(self):
+    def _pseudo_sample_sheet_and_get_clinical_data(self):
         """Pseudonymizes run SampleSheet and 
         collect clinical data of predictive number in a given run
 
@@ -120,7 +120,7 @@ class Pseudonymizer:
 
         return predictive_pseudo_tuples
 
-    def create_temporary_pseudo_table(self, predictive_pseudo_tuples):
+    def _create_temporary_pseudo_table(self, predictive_pseudo_tuples):
         """Create a temporary pseudonymisation_table json file consisting
         only of predictive:pseudo tuples of a current run
 
@@ -135,7 +135,7 @@ class Pseudonymizer:
         with open(f"{self.pseudo_pred_path}.temp", 'w+') as outfile:
             json.dump(data, outfile, indent=4)
 
-    def locate_all_files_with_predictive_number(self, predictive_pseudo_tuples):
+    def _locate_all_files_with_predictive_number(self, predictive_pseudo_tuples):
         """Locate all files in a run that contain a predictive number in the name 
         and replace it with pseudonymized predictive number
 
@@ -146,9 +146,9 @@ class Pseudonymizer:
         """
 
         for pred, pseudo in predictive_pseudo_tuples:
-            self.rename_files_recursively(pred, pseudo, self.run_path)
+            self._rename_files_recursively(pred, pseudo, self.run_path)
 
-    def rename_files_recursively(self, text_to_replace, replaced_text, current_file):
+    def _rename_files_recursively(self, text_to_replace, replaced_text, current_file):
         """Recursively renames all files ina run that contain predictive number with
         pseudonymized predictive number. Does it in a way to not create conflicts in a renaming
 
@@ -167,7 +167,7 @@ class Pseudonymizer:
         for file in os.listdir(current_file_renamed):
             file_path = os.path.join(current_file_renamed, file)
             if os.path.isdir(file_path):
-                self.rename_files_recursively(text_to_replace, replaced_text, file_path)
+                self._rename_files_recursively(text_to_replace, replaced_text, file_path)
             else:
                 os.rename(os.path.join(current_file_renamed, file), os.path.join(current_file_renamed, file.replace(text_to_replace, replaced_text)))
 

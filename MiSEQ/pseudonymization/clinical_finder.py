@@ -243,7 +243,6 @@ class FindClinicalInfo:
             patient.samples = self._get_samples_with_unique_predictive_number(patient.samples)
             new_patient = Patient(patient.ID, patient.birth, patient.sex, [])
 
-
             for sample in patient.samples:
                 new_patient.samples = [sample]
                 pac_dict_for_catalogue = self._convert_samples_to_dict(new_patient).__dict__
