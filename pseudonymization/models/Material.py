@@ -1,4 +1,4 @@
-from ..pseudonimization_classes.pseudonimize_sample import PseudonymizeSample
+from ..pseudonimization_api.pseudonimize_sample import PseudonymizeSample
 
 class Material:
     """

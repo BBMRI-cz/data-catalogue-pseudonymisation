@@ -1,8 +1,10 @@
 # This repo specific
 revitalize_folder.sh
+testing.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+.vscode/
 *.py[cod]
 *$py.class
 

@@ -1,13 +1,13 @@
 import os
 import pandas as pd
-from .ClinicalFinder import ClinicalInfoFinder
-from .pseudonimization_classes.pseudonimize_patient import PseudonymizePatient
-from .pseudonimization_classes.pseudonimize_predictive import PseudonymizePredictive
+from pseudonymization.process.clinical_finder import ClinicalInfoFinder
 
-from .database_classes.Patient import Patient
-from .database_classes.Tissue import Tissue
-from .database_classes.Genome import Genome
-from .database_classes.Serum import Serum
+from ..pseudonimization_api.pseudonimize_patient import PseudonymizePatient
+from ..pseudonimization_api.pseudonimize_predictive import PseudonymizePredictive
+from ..models.Patient import Patient
+from ..models.Tissue import Tissue
+from ..models.Genome import Genome
+from ..models.Serum import Serum
 
 import logging
 import json
@@ -22,22 +22,14 @@ class RunPseudonimizer():
         self.run_path = run_path
 
     def __call__(self):
-        # read_all_predictive_numbers_from_sample_sheet
-        # pseudonimize_all_of_then
         pred_pseudo_tuples = self._get_all_predictive_numbers_pseudonymize_sample_sheet()
         for pred, pseudo in pred_pseudo_tuples:
-            print("Currently working on:", pred, pseudo)
-            # pseudonimize_all_files_recursively
             self._pseudonymize_file_names_recursively(pred, pseudo, self.run_path)
-            self._try_pseudonimize_files(pred, pseudo)
-            # look for all clinical data
+            self._try_pseudonimize_content_of_files(pred, pseudo)
             clinical_data = ClinicalInfoFinder(self.run_path).collect_clinical_data(pred)
-            print(clinical_data)
+
             if clinical_data:
-                # pseudonimize them
                 clinical_data_for_saving = self._prepare_clinical_data_for_saving(clinical_data, pseudo)
-                print(clinical_data_for_saving)
-                # and store them to folders
                 self._save_clinical_data(clinical_data_for_saving,
                                         os.path.join(self.run_path, "catalog_info_per_pred_number"),
                                         pseudo)
@@ -79,19 +71,25 @@ class RunPseudonimizer():
             if os.path.isdir(file_path):
                 self._pseudonymize_file_names_recursively(text_to_replace, replaced_text, file_path)
             else:
-                os.rename(os.path.join(current_file_renamed, file), os.path.join(current_file_renamed, file.replace(text_to_replace, replaced_text)))
+                os.rename(
+                    os.path.join(current_file_renamed, file), 
+                    os.path.join(current_file_renamed, file.replace(text_to_replace, replaced_text))
+                    )
 
-    def _try_pseudonimize_files(self, pred_number, pseudo_pred_number):
+    def _try_pseudonimize_content_of_files(self, pred_number, pseudo_pred_number):
         subprocess.call(["pseudonymization/replace_predictive.sh", self.run_path, pred_number, pseudo_pred_number])
 
     def _prepare_clinical_data_for_saving(self, patient_clinical_data, pseudo_id):
         samples = [self._prepare_sample(sample, pseudo_id) for sample in patient_clinical_data["samples"]]
-        print("Individual samples:\n", samples)
         samples.sort()
-        print(samples)
 
         pseudo_patient_id = PseudonymizePatient(patient_clinical_data["ID"], self.patient_pseudo_table)()
-        patient = Patient(pseudo_patient_id, patient_clinical_data["birth_date"], patient_clinical_data["sex"], samples)
+        patient = Patient(
+            pseudo_patient_id,
+            patient_clinical_data["birth_date"],
+            patient_clinical_data["sex"],
+            samples
+            )
 
         return patient
 

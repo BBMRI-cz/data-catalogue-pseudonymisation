@@ -4,7 +4,7 @@ import os
 class ConfigProcessor:
 
     def __init__(self):
-        self.config_path = "/home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-pseudonymisation/MiSEQ/config.cfg"  #os.environ["PSEUDO_CONFIG_PATH"]
+        self.config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.cfg")  #os.environ["PSEUDO_CONFIG_PATH"]
         self.config = ConfigParser()
         self.config.read_file(open(self.config_path))
 

@@ -3,7 +3,7 @@ import os
 import uuid
 import logging
 import json
-from ..ConfigProcessor import ConfigProcessor
+from ..helpers.config_processor import ConfigProcessor
 
 class PseudonymizeSample:
 

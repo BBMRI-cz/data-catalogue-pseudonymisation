@@ -4,7 +4,7 @@ import uuid
 import logging
 import json
 import re
-from ..ConfigProcessor import ConfigProcessor
+from ..helpers.config_processor import ConfigProcessor
 
 class PseudonymizePredictive:
 

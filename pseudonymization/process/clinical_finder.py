@@ -1,6 +1,6 @@
 import requests
 import re
-from .ConfigProcessor import ConfigProcessor
+from ..helpers.config_processor import ConfigProcessor
 
 
 class ClinicalInfoFinder:
@@ -9,7 +9,7 @@ class ClinicalInfoFinder:
         self.run_path = run_path
         self.EXPORT_API = ConfigProcessor().get_export_API()
 
-    def collect_clinical_data(self, predictive_number: str) -> dict:
+    def collect_clinical_data(self, predictive_number: str) -> dict: 
         fixed_pred_number = self._fix_pred_number_format_for_export(predictive_number) # 2022-1234 format
         print("Fixed pred number:", fixed_pred_number)
         if fixed_pred_number:
