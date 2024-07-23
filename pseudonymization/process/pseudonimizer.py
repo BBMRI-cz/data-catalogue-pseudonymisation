@@ -77,7 +77,7 @@ class RunPseudonimizer():
                     )
 
     def _try_pseudonimize_content_of_files(self, pred_number, pseudo_pred_number):
-        subprocess.call(["pseudonymization/replace_predictive.sh", self.run_path, pred_number, pseudo_pred_number])
+        subprocess.call(["pseudonymization/helpers/replace_predictive.sh", self.run_path, pred_number, pseudo_pred_number])
 
     def _prepare_clinical_data_for_saving(self, patient_clinical_data, pseudo_id):
         samples = [self._prepare_sample(sample, pseudo_id) for sample in patient_clinical_data["samples"]]

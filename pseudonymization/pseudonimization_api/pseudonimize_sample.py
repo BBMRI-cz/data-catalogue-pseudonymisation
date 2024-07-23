@@ -60,7 +60,6 @@ class PseudonymizeSample:
     def __add_new_sample_number_to_db(self, pseudo_number):
         new_data = {"sample_ID": self.sample_number, "pseudo_sample_ID": pseudo_number}
         res = requests.post(f"{self.sample_pseudo_API}", json=new_data)
-        print(res)
         if res.status_code == 200:
             logging.info("New patient number was sucessfully uploaded to DB with API")
         else:

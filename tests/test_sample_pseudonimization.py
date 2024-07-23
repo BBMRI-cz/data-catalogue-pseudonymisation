@@ -20,6 +20,18 @@ def mock_non_existing_sample():
 def mock_new_uuid_value():
     return UUID('{12345678-1234-5678-1234-567812345678}')
 
+@pytest.fixture
+def mock_POST_predictive_OK_return():
+    return {
+        "data": {
+            "pseudo_sample_ID": "mmci_sample_12345678-1234-5678-1234-567812345678",
+            "sample_ID": "BBM:2021:112:1"
+        },
+        "isError": False,
+        "message": "Success",
+        "statusCode": 200
+    }
+
 def _setup_fake_sample_file():
     json_data ={
     "samples": [
@@ -69,11 +81,14 @@ def test_predictive_exist(mocker, mock_existing_sample):
         if sample["sample_ID"] == "BBM:2021:111:1":
             assert sample["pseudo_sample_ID"] == "mmci_sample_eefbaeee-8eee-4eee-beee-ee2ed600eeee"
 
-def test_predictive_not_exist(mocker, mock_non_existing_sample, mock_new_uuid_value):
-    fake_resp = _generate_fake_OK_http_response(mocker, mock_non_existing_sample)
+def test_predictive_not_exist(mocker, mock_non_existing_sample, mock_new_uuid_value, mock_POST_predictive_OK_return):
+    fake_GET_resp = _generate_fake_OK_http_response(mocker, mock_non_existing_sample)
+    fake_POST_resp = _generate_fake_OK_http_response(mocker, mock_POST_predictive_OK_return)
 
-    mocker.patch("pseudonymization.pseudonimization_api.pseudonimize_sample.requests.get", return_value=fake_resp)
+    mocker.patch("pseudonymization.pseudonimization_api.pseudonimize_sample.requests.get", return_value=fake_GET_resp)
+    mocker.patch("pseudonymization.pseudonimization_api.pseudonimize_sample.requests.post", return_value=fake_POST_resp)
     mocker.patch("pseudonymization.pseudonimization_api.pseudonimize_sample.uuid.uuid4", return_value=mock_new_uuid_value)
+    
     sample_pseudo = PseudonymizeSample("BBM:2021:112:1", PSEUDONYMIZATION_FILE)
     sample_pseudo_number = sample_pseudo()
     

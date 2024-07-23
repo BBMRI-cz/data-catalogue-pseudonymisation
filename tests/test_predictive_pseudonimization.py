@@ -20,6 +20,18 @@ def mock_non_existing_predictive():
 def mock_new_uuid_value():
     return UUID('{12345678-1234-5678-1234-567812345678}')
 
+@pytest.fixture
+def mock_POST_predictive_OK_return():
+    return {
+        "data": {
+            "predictive_ID": "2023-1112",
+            "predictive_pseudo_ID": "mmci_predictive_99597ef6-6a6d-4223-b24f-7cde65d82bcf"
+        },
+        "isError": False,
+        "message": "Success",
+        "statusCode": 200
+    }
+
 def _setup_fake_predictive_file():
     json_data = {
     "predictive": [
@@ -67,11 +79,14 @@ def test_predictive_exist(mocker, mock_existing_predictive):
         if predictive["predictive_number"] == "2023-1111":
             assert predictive["pseudo_number"] == "mmci_predictive_11f6afb1-9f11-4cee-ee47-eee5f5a8e0ee"
 
-def test_predictive_not_exist(mocker, mock_non_existing_predictive, mock_new_uuid_value):
-    fake_resp = _generate_fake_OK_http_response(mocker, mock_non_existing_predictive)
-
-    mocker.patch("pseudonymization.pseudonimization_api.pseudonimize_predictive.requests.get", return_value=fake_resp)
+def test_predictive_not_exist(mocker, mock_non_existing_predictive, mock_new_uuid_value, mock_POST_predictive_OK_return):
+    fake_GET_resp = _generate_fake_OK_http_response(mocker, mock_non_existing_predictive)
+    fake_POST_resp = _generate_fake_OK_http_response(mocker, mock_POST_predictive_OK_return)
+ 
+    mocker.patch("pseudonymization.pseudonimization_api.pseudonimize_predictive.requests.get", return_value=fake_GET_resp)
+    mocker.patch("pseudonymization.pseudonimization_api.pseudonimize_predictive.requests.post", return_value=fake_POST_resp)
     mocker.patch("pseudonymization.pseudonimization_api.pseudonimize_predictive.uuid.uuid4", return_value=mock_new_uuid_value)
+    
     pat_pseudo = PseudonymizePredictive(PSEUDONYMIZATION_FILE)
     predictive_number = pat_pseudo.pseudonimize("2023-1112")
     

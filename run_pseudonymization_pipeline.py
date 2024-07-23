@@ -29,6 +29,7 @@ if __name__ == "__main__":
     parser.add_argument("destination_folder")
     parser.add_argument("pseudo_tables_folder")
     parser.add_argument("sequencing_libraries")
+    parser.add_argument("sequencing_libraries_sc")
     parser.add_argument("run_type", choices=["MiSEQ", "NextSeq"])
     
     args = parser.parse_args()
@@ -37,9 +38,3 @@ if __name__ == "__main__":
         pseudonymize_miseq_runs(args.source_folder, args.destination_folder, args.pseudo_tables_folder, args.sequencing_libraries)
     elif args.run_type == "NextSeq":
         pseudonymize_nextseq_runs(args.source_folder, args.destination_folder, args.pseudo_tables_folder, args.sequencing_libraries)
-
-
-
-
-
-

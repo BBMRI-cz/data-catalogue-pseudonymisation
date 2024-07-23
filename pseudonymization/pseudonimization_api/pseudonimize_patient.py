@@ -33,7 +33,7 @@ class PseudonymizePatient:
             if data:
                 return data["patient_pseudo_ID"]
             else:
-                None
+                return None
 
 
     def _generate_patient_number(self):
@@ -59,11 +59,7 @@ class PseudonymizePatient:
 
     def __add_new_patient_number_to_db(self, pseudo_number):
         new_data = {"patient_ID": str(self.patient_number), "patient_pseudo_ID": pseudo_number}
-        print(new_data)
         res = requests.post(f"{self.patient_pseudo_API}", json=new_data)
-        print(res)
-        print(res.content)
-        print(res.status_code)
         if res.status_code == 200:
             logging.info("New patient number was sucessfully uploaded to DB with API")
         else:
