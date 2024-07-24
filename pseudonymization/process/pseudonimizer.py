@@ -25,7 +25,7 @@ class RunPseudonimizer():
         pred_pseudo_tuples = self._get_all_predictive_numbers_pseudonymize_sample_sheet()
         for pred, pseudo in pred_pseudo_tuples:
             self._pseudonymize_file_names_recursively(pred, pseudo, self.run_path)
-            self._try_pseudonimize_content_of_files(pred, pseudo)
+            self._try_pseudonimize_content_of_files(pred, pseudo) # This needs to run after the _pseudo_files_names_req
             clinical_data = ClinicalInfoFinder(self.run_path).collect_clinical_data(pred)
 
             if clinical_data:

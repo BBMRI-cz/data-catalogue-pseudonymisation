@@ -171,12 +171,11 @@ def test_save_clinical_data(mocker,
 
     pat = Patient("mmci_patient_12345678-1234-5678-1234-567812345621", "Fri, 1 Mar 1990 00:00:00 GMT", 1, samples)
 
-    folder_for_clinical_data = os.path.join(FAKE_RUN_FOLDER_FOR_COPY, "catalog_info_per_pred_number")
+    folder_for_clinical_data = os.path.join(FAKE_RUN_FOR_TESTING, "catalog_info_per_pred_number")
     pseudo_pred_number = "mmci_patient_12345678-1234-5678-1234-567812345688"
 
     pseudonimizer = RunPseudonimizer(FAKE_RUN_FOR_TESTING, PSEUDONYMIZATION_FILES_FOLDER)
     pseudonimizer._save_clinical_data(pat, folder_for_clinical_data, pseudo_pred_number)
 
 
-    assert os.path.exists(os.path.join(FAKE_RUN_FOLDER_FOR_COPY, "catalog_info_per_pred_number", f"{pseudo_pred_number}.json"))
-
+    assert os.path.exists(os.path.join(FAKE_RUN_FOR_TESTING, "catalog_info_per_pred_number", f"{pseudo_pred_number}.json"))

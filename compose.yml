@@ -1,0 +1,18 @@
+version: '3.0'
+services:
+  run:
+    build: .
+    volumes:
+      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/muni-sc/:/sc
+      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/seq/TRANSFER/:/TRANSFER
+      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/pseudonymisation_table/:/pseudonymization_tables/
+      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/Libraries/:/libraries
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: bash -c "python run_pseudonymization_pipeline.py 
+                              /TRANSFER
+                              /sc/MiSEQ
+                              /pseudonymization_tables
+                              /libraries
+                              /sc/Libraries
+                              'MiSEQ'"
