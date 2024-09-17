@@ -11,7 +11,7 @@ services:
       - "host.docker.internal:host-gateway"
     command: bash -c "python run_pseudonymization_pipeline.py 
                               /TRANSFER
-                              /sc/MiSEQ
+                              /sc/
                               /pseudonymization_tables
                               /libraries
                               /sc/Libraries

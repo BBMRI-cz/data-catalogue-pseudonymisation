@@ -1,5 +1,5 @@
 from .Material import Material
-from ..helpers.datetime_helpers import covert_to_date
+from ..helpers.datetime_helpers import covert_str_to_datetime
 
 
 class Tissue(Material):
@@ -30,8 +30,8 @@ class Tissue(Material):
         self.pTNM = sample_dict["ptnm"]
         self.morphology = sample_dict["morphology"]
         self.diagnosis = sample_dict["diagnosis"]
-        self.cut_time = covert_to_date(sample_dict["cut_time"])
-        self.freeze_time = covert_to_date(sample_dict["freeze_time"])
+        self.cut_time = covert_str_to_datetime(sample_dict["cut_time"])
+        self.freeze_time = covert_str_to_datetime(sample_dict["freeze_time"])
         self.retrieved = sample_dict["retrieved"]
 
     def __str__(self) -> str:
@@ -46,12 +46,12 @@ class Tissue(Material):
         return True
     
     def serialize(self) -> dict:
-        sample_dict =  super().serialize()
+        sample_dict = super().serialize()
         sample_dict["material"] = self.material
         sample_dict["pTNM"] = self.pTNM
         sample_dict["morphology"] = self.morphology
         sample_dict["diagnosis"] = self.diagnosis
-        sample_dict["cut_time"] = f"{self.cut_time.date} {self.cut_time.time}"
-        sample_dict["freeze_time"] = f"{self.freeze_time.date} {self.freeze_time.time}"
+        sample_dict["cut_time"] = self.cut_time.strftime("%d/%m/%Y, %H:%M:%S")
+        sample_dict["freeze_time"] = self.freeze_time.strftime("%d/%m/%Y, %H:%M:%S")
         sample_dict["retrieved"] = self.retrieved
         return sample_dict

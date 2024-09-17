@@ -1,6 +1,7 @@
 from .Material import Material
 
-from ..helpers.datetime_helpers import covert_to_date
+from ..helpers.datetime_helpers import covert_str_to_datetime
+
 
 class Genome(Material):
     """
@@ -18,7 +19,7 @@ class Genome(Material):
         super().__init__(sample_dict, pseudo_number,  sample_table)
         self.material = sample_dict["type"]
         self.retrieved = sample_dict["retrieved"]
-        self.taking_date = covert_to_date(sample_dict["taking_date"])
+        self.taking_date = covert_str_to_datetime(sample_dict["taking_date"])
 
     def __lt__(self, other) -> bool:
         if isinstance(other, Genome):
@@ -29,5 +30,5 @@ class Genome(Material):
         sample_dict = super().serialize()
         sample_dict["material"] = self.material
         sample_dict["retrieved"] = self.retrieved
-        sample_dict["taking_date"] = f"{self.taking_date.day}/{self.taking_date.month}/{self.taking_date.year}"
+        sample_dict["taking_date"] = self.taking_date.strftime("%d/%m/%Y")
         return sample_dict

@@ -3,7 +3,8 @@ import os
 import uuid
 import logging
 import json
-from ..helpers.config_processor import ConfigProcessor
+from pseudonymization.config.config_processor import ConfigProcessor
+
 
 class PseudonymizeSample:
 
@@ -14,17 +15,15 @@ class PseudonymizeSample:
         self.pseudo_table_file_path = path_to_sample_pseudo_table_file
         self.sample_pseudo_API = f"{ConfigProcessor().get_pseudo_API()}/sample"
 
-
     def __call__(self) -> str:
-        pseudo_number = self._check_if_already_has_sample_number()
-        if pseudo_number:
-            return pseudo_number
+        pseudo_sample_number = self._check_if_already_has_sample_number()
+        if pseudo_sample_number:
+            return pseudo_sample_number
         else:
-            pseudo_number = self._generate_sample_number()
-            self.__add_new_sample_number_to_file(pseudo_number)
-            self.__add_new_sample_number_to_db(pseudo_number)
-            return pseudo_number
-
+            pseudo_sample_number = self._generate_sample_number()
+            self.__add_new_sample_number_to_file(pseudo_sample_number)
+            self.__add_new_sample_number_to_db(pseudo_sample_number)
+            return pseudo_sample_number
 
     def _check_if_already_has_sample_number(self):
         req = requests.get(f"{self.sample_pseudo_API}/{self.sample_number}")
@@ -33,15 +32,13 @@ class PseudonymizeSample:
             if data:
                 return data["sample_pseudo_ID"]
             else:
-                None
-
+                return None
 
     def _generate_sample_number(self):
         return "mmci_sample_" + str(uuid.uuid4())
-    
 
     def __add_new_sample_number_to_file(self, pseudo_number):
-        data = {"samples":[]}
+        data = {"samples": []}
         if os.path.exists(self.pseudo_table_file_path):
             with open(self.pseudo_table_file_path, 'r') as json_file:
                 data = json.load(json_file)
@@ -55,7 +52,6 @@ class PseudonymizeSample:
             data["samples"] = pseudo_list
             json.dump(data, output, indent=4)
             logging.info("New sample_ID was added to outputfile")
-
 
     def __add_new_sample_number_to_db(self, pseudo_number):
         new_data = {"sample_ID": self.sample_number, "pseudo_sample_ID": pseudo_number}

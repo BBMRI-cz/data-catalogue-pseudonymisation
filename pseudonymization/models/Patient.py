@@ -1,6 +1,7 @@
 from .Material import Material
 
-from ..helpers.datetime_helpers import covert_to_date
+from ..helpers.datetime_helpers import covert_str_to_datetime
+
 
 class Patient:
     """
@@ -21,7 +22,7 @@ class Patient:
 
     def __init__(self, id: str, birth: str, sex: str, samples: list[Material]):
         self.ID = id
-        self.birth = covert_to_date(birth)
+        self.birth = covert_str_to_datetime(birth)
         self.sex = sex
         self.samples = samples
 
@@ -33,7 +34,7 @@ class Patient:
     def serialize(self):
         return {
             "ID": self.ID,
-            "birth": f"{self.birth.day}/{self.birth.month}/{self.birth.year}",
+            "birth": self.birth.strftime("%d/%m/%Y"),
             "sex": self.sex,
             "samples": [sample.serialize() for sample in self.samples]
         }

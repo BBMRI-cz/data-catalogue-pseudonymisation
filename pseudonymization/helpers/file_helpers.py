@@ -10,7 +10,7 @@ def remove_path_if_exist(file_path):
             os.remove(file_path)
 
 
-def remove_miseq_run_files(run_path):
+def remove_miseq_run_files(run_path: object) -> object:
     remove_path_if_exist(os.path.join(run_path, "Data", "RTALogs"))
     remove_path_if_exist(os.path.join(run_path, "Data", "Intensities", "L001"))
     remove_path_if_exist(os.path.join(run_path, "Thumbnail_Images"))

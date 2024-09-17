@@ -4,7 +4,7 @@ import uuid
 import logging
 import json
 import re
-from ..helpers.config_processor import ConfigProcessor
+from pseudonymization.config.config_processor import ConfigProcessor
 
 class PseudonymizePredictive:
 
@@ -13,8 +13,7 @@ class PseudonymizePredictive:
         self.pseudo_table_file_path = path_to_predictive_pseudo_table_file
         self.predictive_pseudo_API = f"{ConfigProcessor().get_pseudo_API()}/predictive"
 
-
-    def pseudonimize(self, pred_number) -> str:
+    def pseudonymize(self, pred_number) -> str:
         pseudo_number = self._check_if_already_has_pred_number(pred_number)
         if pseudo_number:
             return pseudo_number

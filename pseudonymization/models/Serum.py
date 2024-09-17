@@ -2,7 +2,8 @@ from .Material import Material
 from .Tissue import Tissue
 from .Genome import Genome
 
-from ..helpers.datetime_helpers import covert_to_date
+from ..helpers.datetime_helpers import covert_str_to_datetime
+
 
 class Serum(Material):
     """
@@ -22,7 +23,7 @@ class Serum(Material):
         super().__init__(sample_dict, pseudo_number, pseudo_sample_file)
         self.material = sample_dict["type"]
         self.diagnosis = sample_dict["diagnosis"]
-        self.taking_date = covert_to_date(sample_dict["taking_date"])
+        self.taking_date = covert_str_to_datetime(sample_dict["taking_date"])
 
     def __lt__(self, other) -> bool:
         if isinstance(other, Tissue):
@@ -36,5 +37,5 @@ class Serum(Material):
         sample_dict = super().serialize()
         sample_dict["material"] = self.material
         sample_dict["diagnosis"] = self.diagnosis
-        sample_dict["taking_date"] = f"{self.taking_date.day}/{self.taking_date.month}/{self.taking_date.year}"
+        sample_dict["taking_date"] = self.taking_date.strftime("%d/%m/%Y")
         return sample_dict

@@ -1,5 +1,6 @@
 from ..pseudonimization_api.pseudonimize_sample import PseudonymizeSample
 
+
 class Material:
     """
     Parent class for all the different materials present in the LTS (Long term Storage) of MMCI Biobank
@@ -19,7 +20,6 @@ class Material:
     material_type: str 
         an integer defining what type of material is the sample
     """
-
 
     def __init__(self, sample_dict, pseudo_number, pseudo_sample_file):
         self.pseudo_ID = pseudo_number
