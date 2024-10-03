@@ -1,19 +1,11 @@
 import os
 import shutil
 
-from pseudonymization.pseudonymizers.run_pseudonymizer import RunPseudonymizer
 from pseudonymization.removers.remover import FileRemover
-from pseudonymization.finders.info_finder import InfoFinder
-
+from pseudonymization.pseudonymizers.run_pseudonymizer import RunPseudonymizer
 from pseudonymization.pseudonymizers.old_miseq_pseudonymizer import OldMiseqPseudonymizer
 from pseudonymization.pseudonymizers.new_miseq_pseudonymizer import NewMiseqPseudonymizer
 from pseudonymization.pseudonymizers.nextseq_pseudonymizer import NextSeqPseudonymizer
-
-from pseudonymization.removers.old_miseq_remover import OldMiSEQRemover
-from pseudonymization.removers.new_miseq_remover import NewMiSEQRemover
-from pseudonymization.removers.nextseq_remover import NextSeqRemover
-
-from pseudonymization.finders.clinical_finder import ClinicalInfoFinder
 
 
 class Processor:
