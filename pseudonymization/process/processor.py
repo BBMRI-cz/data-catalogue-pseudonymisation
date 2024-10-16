@@ -1,6 +1,6 @@
 import os
 import shutil
-
+import  xml.etree.ElementTree as ET
 from pseudonymization.removers.remover import FileRemover
 from pseudonymization.pseudonymizers.run_pseudonymizer import RunPseudonymizer
 from pseudonymization.pseudonymizers.old_miseq_pseudonymizer import OldMiseqPseudonymizer
@@ -36,9 +36,17 @@ class Processor:
     def _initialize_based_on_record_type(self, full_run_path) -> (FileRemover, RunPseudonymizer):
         if "SoftwareVersionsFile.csv" in os.listdir(full_run_path) or "Alignment_1" in os.listdir(full_run_path):
             pseudonymizer = NewMiseqPseudonymizer(full_run_path, self.pseudonymization_tables_folder)
-        elif "Something NextSeqSpecific" in os.listdir(full_run_path):
-            pseudonymizer = NextSeqPseudonymizer()
+        elif self._is_next_seq_based_on_run_parameters(full_run_path):
+            pseudonymizer = NextSeqPseudonymizer(full_run_path, self.pseudonymization_tables_folder)
         else:
             pseudonymizer = OldMiseqPseudonymizer(full_run_path, self.pseudonymization_tables_folder)
 
         return pseudonymizer
+
+    def _is_next_seq_based_on_run_parameters(self, full_run_path):
+        run_parameters = os.path.join(full_run_path, "RunParameters.xml")
+        tree = ET.parse(run_parameters)
+        root = tree.getroot()
+        for child in root:
+            if child.tag == "RunParametersVersion":
+                return "nextseq" in child.text.lower()

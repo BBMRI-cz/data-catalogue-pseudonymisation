@@ -1,6 +1,4 @@
 import os.path
-from typing import Optional
-
 from .remover import FileRemover
 from pseudonymization.helpers.file_helpers import remove_path_if_exist
 
