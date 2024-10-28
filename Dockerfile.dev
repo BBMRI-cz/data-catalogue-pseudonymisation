@@ -5,7 +5,7 @@ RUN mkdir /pseudo-app
 WORKDIR /pseudo-app
 
 ADD requirements.txt .
-ADD run_pseudonymization_pipeline.py .
+ADD main.py .
 ADD pseudonymization/ pseudonymization/
 ADD tests/ tests/
 

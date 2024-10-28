@@ -1,0 +1,16 @@
+FROM bitnami/python:3.10
+
+RUN mkdir /pseudo-app
+
+WORKDIR /pseudo-app
+
+RUN groupadd -g 1002 sequencers && useradd -u 1005 -g sequencers export
+
+ADD requirements.txt .
+ADD main.py .
+ADD pseudonymization/ pseudonymization/
+ADD tests/ tests/
+
+RUN pip install -r requirements.txt
+
+USER export

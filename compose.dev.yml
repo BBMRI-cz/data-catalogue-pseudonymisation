@@ -1,0 +1,19 @@
+version: '3.0'
+services:
+  run:
+    build: Dockerfile.dev
+    user: "1001:998"
+    volumes:
+      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/muni-sc/:/sc
+      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/seq/TRANSFER/:/TRANSFER
+      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/pseudonymisation_table/:/pseudonymisation_tables/
+      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/Libraries/:/Libraries
+      - /var/run/docker.sock:/var/run/docker.sock
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: bash -c "python main.py
+                              -s /TRANSFER
+                              -d /sc/PseudonymizedRuns
+                              -t /pseudonymisation_tables
+                              -l /Libraries
+                              -lsc /sc/Libraries"
