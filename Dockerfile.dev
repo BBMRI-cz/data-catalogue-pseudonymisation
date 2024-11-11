@@ -1,13 +1,13 @@
 FROM bitnami/python:3.10
-
 RUN mkdir /pseudo-app
 
 WORKDIR /pseudo-app
 
 ADD requirements.txt .
 ADD main.py .
-ADD pseudonymization/ pseudonymization/
-ADD tests/ tests/
+ADD pseudonymization pseudonymization/
+ADD tests tests/
+ADD dev-config.cfg pseudonymization/config/config.cfg
 
 RUN pip install -r requirements.txt
 

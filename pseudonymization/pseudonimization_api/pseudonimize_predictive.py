@@ -56,8 +56,6 @@ class PseudonymizePredictive:
             data = req.json()
             if data:
                 return data["predictive_pseudo_ID"]
-            else:
-                None
 
 
     def _generate_pseudo_number(self):
@@ -87,4 +85,5 @@ class PseudonymizePredictive:
         if res.status_code == 200:
             logging.info("New predictive number was sucessfully uploaded to DB with API")
         else:
-            logging.warning(f"Could not upload new predictive_ID: {predictive_number} and its pseudonym: {pseudo_number}")
+            logging.warning(f"Could not upload new predictive_ID: {predictive_number} and its pseudonym: {pseudo_number}"
+                            f". Got {res.status_code} when uploading data")

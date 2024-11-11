@@ -3,7 +3,6 @@ import pandas as pd
 
 from .run_pseudonymizer import RunPseudonymizer
 from pseudonymization.pseudonimization_api.pseudonimize_predictive import PseudonymizePredictive
-from pseudonymization.removers.nextseq_remover import NextSeqRemover
 
 class NextSeqPseudonymizer(RunPseudonymizer):
 
@@ -14,7 +13,6 @@ class NextSeqPseudonymizer(RunPseudonymizer):
         self.run_path = run_path
 
     def pseudonymize(self):
-        # NextSeqRemover(self.run_path).remove_files()
         pred_pseudo_tuples = self._get_all_predictive_numbers_pseudonymize_sample_sheet()
         return pred_pseudo_tuples
 

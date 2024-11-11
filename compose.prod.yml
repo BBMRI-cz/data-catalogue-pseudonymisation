@@ -1,10 +1,17 @@
 version: '3.0'
 services:
   run:
-    build: Dockerfile.prod
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
     user: "1005:1002"
     volumes:
       - /muni-ss/:/sc
       - /seq/NO-BACKUP-SPACE/:/seq
       - /pseudo_tables/:/pseudo_tables
-    command: ["bash", "-c", "python main.py -s /seq/TRANSFER/MiSEQ -d /sc/PSEUDONYMIZED/ -t /pseudo_tables -l /seq/Libraries -lsc /sc/Libraries"]
+    command: ["bash", "-c", "python main.py 
+    -s /seq/TRANSFER/MiSEQ 
+    -d /sc/PSEUDONYMIZED/ 
+    -t /pseudo_tables 
+    -l /seq/Libraries 
+    -lsc /sc/Libraries"]

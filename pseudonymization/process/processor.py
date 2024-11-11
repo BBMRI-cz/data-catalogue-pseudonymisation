@@ -7,7 +7,6 @@ from pseudonymization.pseudonymizers.old_miseq_pseudonymizer import OldMiseqPseu
 from pseudonymization.pseudonymizers.new_miseq_pseudonymizer import NewMiseqPseudonymizer
 from pseudonymization.pseudonymizers.nextseq_pseudonymizer import NextSeqPseudonymizer
 
-
 class Processor:
 
     def __init__(self, sequencing_run: str, destination_folder: str, pseudo_tables_folder: str,
@@ -22,14 +21,13 @@ class Processor:
         for run in os.listdir(self.sequencing_file_path):
             full_run_path = os.path.join(self.sequencing_file_path, run)
             pseudonymizer = self._initialize_based_on_record_type(full_run_path)
-
             pseudonymizer.pseudonymize()
-            self._copy_pseudonymizer_run_to_sc(run)
+            self._mv_pseudonymizer_run_to_sc(run)
 
     def copy_libraries(self):
         shutil.copytree(self.sequencing_libraries_folder, self.sequencing_libraries_folder_sc, dirs_exist_ok=True)
 
-    def _copy_pseudonymizer_run_to_sc(self, run_name):
+    def _mv_pseudonymizer_run_to_sc(self, run_name):
         shutil.move(os.path.join(self.sequencing_file_path, run_name),
                     os.path.join(self.destination_folder, run_name))
 

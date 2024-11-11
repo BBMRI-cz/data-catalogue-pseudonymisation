@@ -10,6 +10,7 @@ ADD requirements.txt .
 ADD main.py .
 ADD pseudonymization/ pseudonymization/
 ADD tests/ tests/
+ADD prod-config.cfg pseudonymization/config/config.cfg
 
 RUN pip install -r requirements.txt
 
