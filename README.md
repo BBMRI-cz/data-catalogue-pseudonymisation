@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/682956470.svg)](https://doi.org/10.5281/zenodo.10408797)
 # data-catalogue-pseudonymisation
 This is the repository for the pseudonymisation part of the BBMRI.cz data catalog.
 
