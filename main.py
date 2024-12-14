@@ -9,6 +9,7 @@ if __name__ == "__main__":
                                                  " deletes unimportant data and sends them to SensitiveCloud")
     parser.add_argument("-s", "--source_folder", type=str, required=True)
     parser.add_argument("-d", "--destination_folder", type=str, required=True)
+    parser.add_argument("-dn", "--destination_nextseq_folder", type=str, required=True)
     parser.add_argument("-t", "--pseudo_tables_folder", type=str, required=True)
     parser.add_argument("-l", "--sequencing_libraries", type=str, required=True)
     parser.add_argument("-lsc", "--sequencing_libraries_sc", type=str, required=True)
@@ -18,6 +19,7 @@ if __name__ == "__main__":
     processor = Processor(
         args.source_folder,
         args.destination_folder,
+        args.destination_nextseq_folder,
         args.pseudo_tables_folder,
         args.sequencing_libraries,
         args.sequencing_libraries_sc

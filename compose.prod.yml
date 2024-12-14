@@ -11,7 +11,8 @@ services:
       - /pseudo_tables/:/pseudo_tables
     command: ["bash", "-c", "python main.py 
     -s /seq/TRANSFER/MiSEQ 
-    -d /sc/PSEUDONYMIZED/ 
+    -d /sc/PSEUDONYMIZED/
+    -dn /sc/NextSeqTemp
     -t /pseudo_tables 
     -l /seq/Libraries 
     -lsc /sc/Libraries"]
