@@ -52,6 +52,8 @@ class Processor:
 
     def _is_next_seq_based_on_run_parameters(self, full_run_path):
         run_parameters = os.path.join(full_run_path, "RunParameters.xml")
+        if not os.path.exists(run_parameters):
+            return False
         tree = ET.parse(run_parameters)
         root = tree.getroot()
         for child in root:
