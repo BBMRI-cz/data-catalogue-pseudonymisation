@@ -8,9 +8,9 @@ services:
     volumes:
       - /muni-ss/:/sc
       - /seq/NO-BACKUP-SPACE/:/seq
-      - /pseudo_tables/:/pseudo_tables
+      - /home/export/pseudonymization_table/:/pseudo_tables
     command: ["bash", "-c", "python main.py 
-    -s /seq/TRANSFER/MiSEQ 
+    -s /seq/TRANSFER/
     -d /sc/PSEUDONYMIZED/
     -dn /sc/NextSeqTemp
     -t /pseudo_tables 
