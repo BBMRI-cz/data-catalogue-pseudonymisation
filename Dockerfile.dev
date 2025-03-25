@@ -10,7 +10,3 @@ ADD tests tests/
 ADD dev-config.cfg pseudonymization/config/config.cfg
 
 RUN pip install -r requirements.txt
-
-USER 1001
-
-CMD ["pytest", "tests"]

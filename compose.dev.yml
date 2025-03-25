@@ -4,18 +4,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    user: "1001:1001"
     volumes:
-      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/muni-sc/:/sc
-      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/seq/TRANSFER/:/TRANSFER
-      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/pseudonymisation_table/:/pseudonymisation_tables/
-      - /home/houfek/Work/MMCI/sequencing_pipeline/data-catalogue-playground/Libraries/:/Libraries
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - /mnt/c/Users/forma/Work_BBRMI/seq_pipeline_sandbox/muni-ss/:/sc
+      - /mnt/c/Users/forma/Work_BBRMI/seq_pipeline_sandbox/seq/TRANSFER/:/TRANSFER
+      - /mnt/c/Users/forma/Work_BBRMI/seq_pipeline_sandbox/seq/pseudonymization_table/:/pseudo_tables
+      - /mnt/c/Users/forma/Work_BBRMI/seq_pipeline_sandbox/seq/Libraries/:/Libraries
     command: bash -c "python main.py
-                              -s /TRANSFER
-                              -d /sc/PseudonymizedRuns
-                              -dn /sc/NextSeqTemp
-                              -t /pseudonymisation_tables
-                              -l /Libraries
-                              -lsc /sc/Libraries"
+      -s /TRANSFER
+      -d /sc/PSEUDONYMIZED
+      -dn /sc/NextSeqTemp
+      -t /pseudo_tables
+      -l /Libraries
+      -lsc /sc/Libraries"
