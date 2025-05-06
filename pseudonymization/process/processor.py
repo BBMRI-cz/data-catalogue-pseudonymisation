@@ -1,6 +1,8 @@
 import os
 import shutil
 import  xml.etree.ElementTree as ET
+from pathlib import Path
+
 from pseudonymization.removers.remover import FileRemover
 from pseudonymization.pseudonymizers.run_pseudonymizer import RunPseudonymizer
 from pseudonymization.pseudonymizers.old_miseq_pseudonymizer import OldMiseqPseudonymizer
@@ -30,6 +32,8 @@ class Processor:
                 self._mv_pseudonymizer_run_to_sc(run)
 
     def copy_libraries(self):
+        file_path = os.path.join(self.destination_next_seq_folder, "Uploads_notes.xlsx")
+        Path(file_path).touch()
         shutil.copytree(self.sequencing_libraries_folder, self.sequencing_libraries_folder_sc, dirs_exist_ok=True)
 
     def _mv_pseudonymizer_run_to_sc(self, run_name):
