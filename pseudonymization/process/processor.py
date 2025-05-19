@@ -1,5 +1,6 @@
 import os
 import shutil
+import time
 import  xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -32,9 +33,15 @@ class Processor:
                 self._mv_pseudonymizer_run_to_sc(run)
 
     def copy_libraries(self):
-        file_path = os.path.join(self.destination_next_seq_folder, "Uploads_notes.xlsx")
-        Path(file_path).touch()
+        self.touch_all_files(self.sequencing_libraries_folder)
         shutil.copytree(self.sequencing_libraries_folder, self.sequencing_libraries_folder_sc, dirs_exist_ok=True)
+
+    def touch_all_files(self, directory):
+        now = time.time()
+        for root, dirs, files in os.walk(directory):
+            for f in files:
+                full_path = os.path.join(root, f)
+                os.utime(full_path, (now, now))
 
     def _mv_pseudonymizer_run_to_sc(self, run_name):
         shutil.move(os.path.join(self.sequencing_file_path, run_name),
