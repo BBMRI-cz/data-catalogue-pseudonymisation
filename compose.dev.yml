@@ -12,7 +12,6 @@ services:
     command: bash -c "python main.py
       -s /TRANSFER
       -d /sc/PSEUDONYMIZED
-      -dn /sc/NextSeqTemp
       -t /pseudo_tables
       -l /Libraries
       -lsc /sc/Libraries"
