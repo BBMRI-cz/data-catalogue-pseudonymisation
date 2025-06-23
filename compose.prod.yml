@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile.prod
     user: "1005:1002"
     volumes:
-      - /muni-ss/:/sc
+      - /muni-sc/:/sc
       - /seq/NO-BACKUP-SPACE/:/seq
       - /home/export/pseudonymization_table/:/pseudo_tables
     command: ["bash", "-c", "python main.py 
