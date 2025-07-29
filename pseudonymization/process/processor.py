@@ -23,6 +23,7 @@ class Processor:
 
     def process_runs(self) -> None:
         for run in os.listdir(self.sequencing_file_path):
+            print("PROCESSING RUN: ", run)
             full_run_path = os.path.join(self.sequencing_file_path, run)
             pseudonymizer = self._initialize_based_on_record_type(full_run_path)
             pseudonymizer.pseudonymize()
