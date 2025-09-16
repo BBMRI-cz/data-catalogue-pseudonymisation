@@ -1,7 +1,6 @@
 import os
 import shutil
 import subprocess
-import logging
 
 from .old_miseq_pseudonymizer import OldMiseqPseudonymizer
 from pseudonymization.finders.clinical_finder import ClinicalInfoFinder
@@ -27,7 +26,7 @@ class NewMiseqPseudonymizer(OldMiseqPseudonymizer):
                 self._save_clinical_data(clinical_data_for_saving,
                                          os.path.join(self.run_path, "catalog_info_per_pred_number"),
                                          pseudo)
-                logging.debug(f"Clinical data saved to in catalog_inf_per_pred_number/{pseudo}")
+                self.logger.debug(f"Clinical data saved to in catalog_inf_per_pred_number/{pseudo}")
 
     def _try_pseudonimize_content_of_files(self, pred_number, pseudo_pred_number):
         subprocess.call(["pseudonymization/helpers/replace_predictive_new_miseq.sh",

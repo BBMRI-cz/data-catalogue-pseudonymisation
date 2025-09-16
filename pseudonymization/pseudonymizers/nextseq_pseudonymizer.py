@@ -1,7 +1,7 @@
 import json
-import logging
 import os
 import pandas as pd
+from pseudonymization.logging_config.logging_config import LoggingConfig
 
 from .run_pseudonymizer import RunPseudonymizer
 from pseudonymization.pseudonimization_api.pseudonimize_predictive import PseudonymizePredictive
@@ -21,6 +21,7 @@ class NextSeqPseudonymizer(RunPseudonymizer):
         self.predictive_pseudo_table = os.path.join(pseudo_tables_folder_path, "predictive.json")
         self.sample_pseudo_table = os.path.join(pseudo_tables_folder_path, "samples.json")
         self.run_path = run_path
+        self.logger = LoggingConfig.get_logger()
 
     def pseudonymize(self):
         pred_pseudo_tuples = self._get_all_predictive_numbers_pseudonymize_sample_sheet()
@@ -84,7 +85,7 @@ class NextSeqPseudonymizer(RunPseudonymizer):
         elif sample["type"] == "Serum":
             return Serum(sample, pseudo_id, self.sample_pseudo_table)
         else:
-            logging.error("Non existing sample tipe")
+            self.logger.error("Non existing sample tipe")
             return None
 
     def _save_clinical_data(self, patient: Patient, destination_path, pseudo_pred_number) -> dict:

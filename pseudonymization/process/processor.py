@@ -10,24 +10,29 @@ from pseudonymization.pseudonymizers.run_pseudonymizer import RunPseudonymizer
 from pseudonymization.pseudonymizers.old_miseq_pseudonymizer import OldMiseqPseudonymizer
 from pseudonymization.pseudonymizers.new_miseq_pseudonymizer import NewMiseqPseudonymizer
 from pseudonymization.pseudonymizers.nextseq_pseudonymizer import NextSeqPseudonymizer
+from pseudonymization.logging_config.logging_config import LoggingConfig
 
 class Processor:
 
     def __init__(self, sequencing_run: str, destination_folder: str,
-                 pseudo_tables_folder: str, sequencing_libraries: str, sequencing_libraries_sc: str):
+                 pseudo_tables_folder: str, sequencing_libraries: str, sequencing_libraries_sc: str, log_dir: str):
         self.sequencing_file_path: str = sequencing_run
         self.destination_folder: str = destination_folder
         self.pseudonymization_tables_folder: str = pseudo_tables_folder
         self.sequencing_libraries_folder = sequencing_libraries
         self.sequencing_libraries_folder_sc = sequencing_libraries_sc
+        self.log_dir = log_dir
 
     def process_runs(self) -> None:
         for run in os.listdir(self.sequencing_file_path):
-            print("PROCESSING RUN: ", run)
+            LoggingConfig.initialize(run, self.log_dir)
+            logger = LoggingConfig.get_logger()
+            logger.info(f"PROCESSING RUN: {run}")
             full_run_path = os.path.join(self.sequencing_file_path, run)
             pseudonymizer = self._initialize_based_on_record_type(full_run_path)
             pseudonymizer.pseudonymize()
             self._mv_pseudonymizer_run_to_sc(run)
+            logger.info(f"FINISHED RUN: {run}")
 
     def copy_libraries(self):
         self.touch_all_files(self.sequencing_libraries_folder)

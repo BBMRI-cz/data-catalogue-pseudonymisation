@@ -1,10 +1,10 @@
 import requests
 import os
 import uuid
-import logging
 import json
 import re
 from pseudonymization.config.config_processor import ConfigProcessor
+from pseudonymization.logging_config.logging_config import LoggingConfig
 
 class PseudonymizePredictive:
 
@@ -12,6 +12,7 @@ class PseudonymizePredictive:
                  path_to_predictive_pseudo_table_file):
         self.pseudo_table_file_path = path_to_predictive_pseudo_table_file
         self.predictive_pseudo_API = f"{ConfigProcessor().get_pseudo_API()}/predictive"
+        self.logger = LoggingConfig.get_logger()
 
     def pseudonymize(self, pred_number) -> str:
         pseudo_number = self._check_if_already_has_pred_number(pred_number)
@@ -76,14 +77,14 @@ class PseudonymizePredictive:
             pseudo_list.append(sample)
             data["predictive"] = pseudo_list
             json.dump(data, output, indent=4)
-            logging.info("New predictive number was added to outputfile")
+            self.logger.info("New predictive number was added to outputfile")
 
 
     def __add_new_pseudo_number_to_db(self, predictive_number, pseudo_number):
         new_data = {"predictive_ID": predictive_number, "predictive_pseudo_ID": pseudo_number}
         res = requests.post(f"{self.predictive_pseudo_API}", json=new_data)
         if res.status_code == 200:
-            logging.info("New predictive number was sucessfully uploaded to DB with API")
+            self.logger.info("New predictive number was sucessfully uploaded to DB with API")
         else:
-            logging.warning(f"Could not upload new predictive_ID: {predictive_number} and its pseudonym: {pseudo_number}"
+            self.logger.warning(f"Could not upload new predictive_ID: {predictive_number} and its pseudonym: {pseudo_number}"
                             f". Got {res.status_code} when uploading data")
