@@ -4,6 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     user: "1005:1002"
+    environment:
+      PSEUDONYMIZATION_API: http://172.16.127.250:8081/api
+      EXPORT_API: http://172.16.55.182:8080/api
     volumes:
       - /muni-sc/:/sc
       - /seq/NO-BACKUP-SPACE/:/seq
