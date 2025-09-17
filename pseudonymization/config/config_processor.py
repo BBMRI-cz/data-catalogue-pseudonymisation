@@ -1,17 +1,29 @@
-from configparser import ConfigParser
 import os
+import requests
 
 class ConfigProcessor:
-
     def __init__(self):
-        self.config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.cfg")  #os.environ["PSEUDO_CONFIG_PATH"]
-        self.config = ConfigParser()
-        self.config.read_file(open(self.config_path))
+        self.pseudo_api = os.getenv("PSEUDONYMIZATION_API")
+        self.export_api = os.getenv("EXPORT_API")
 
+        if not self.pseudo_api or not self.export_api:
+            raise RuntimeError(
+                "Missing required environment variables: "
+                "PSEUDONYMIZATION_API and/or EXPORT_API"
+            )
+        self._check_health(self.pseudo_api)
+        self._check_health(self.export_api)
+
+    def _check_health(self, base_url: str):
+        url = f"{base_url.rstrip('/')}/health"
+        try:
+            resp = requests.get(url, timeout=5)
+            resp.raise_for_status()
+        except Exception as e:
+            raise RuntimeError(f"Health check failed for {base_url}: {e}")
 
     def get_pseudo_API(self):
-        return self.config.get("miseq-config", "PSEUDONYMIZATION-API")
-
+        return self.pseudo_api
 
     def get_export_API(self):
-        return self.config.get("miseq-config", "EXPORT-API")
+        return self.export_api
