@@ -7,6 +7,7 @@ services:
     environment:
       PSEUDONYMIZATION_API: http://172.16.127.250:8081
       EXPORT_API: http://172.16.55.182:8080
+      LOG_LEVEL: INFO
     volumes:
       - /muni-sc/:/sc
       - /seq/NO-BACKUP-SPACE/:/seq
