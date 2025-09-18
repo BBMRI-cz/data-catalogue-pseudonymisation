@@ -23,7 +23,11 @@ class ConfigProcessor:
             raise RuntimeError(f"Health check failed for {base_url}: {e}")
 
     def get_pseudo_API(self):
-        return self.pseudo_api
+        if not self.pseudo_api:
+            raise RuntimeError("PSEUDONYMIZATION_API is not set")
+        return f"{self.pseudo_api.rstrip('/')}/api"
 
     def get_export_API(self):
-        return self.export_api
+        if not self.export_api:
+            raise RuntimeError("EXPORT_API is not set")
+        return f"{self.export_api.rstrip('/')}/api"
