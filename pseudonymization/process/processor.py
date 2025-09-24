@@ -27,12 +27,17 @@ class Processor:
         for run in os.listdir(self.sequencing_file_path):
             LoggingConfig.initialize(run, self.log_dir)
             logger = LoggingConfig.get_logger()
-            logger.info(f"PROCESSING RUN: {run}")
+            logger.info(f"Processing run: {run}")
             full_run_path = os.path.join(self.sequencing_file_path, run)
-            pseudonymizer = self._initialize_based_on_record_type(full_run_path)
-            pseudonymizer.pseudonymize()
-            self._mv_pseudonymizer_run_to_sc(run)
-            logger.info(f"FINISHED RUN: {run}")
+            try:
+                pseudonymizer = self._initialize_based_on_record_type(full_run_path)
+                pseudonymizer.pseudonymize()
+                self._mv_pseudonymizer_run_to_sc(run)
+                logger.info(f"Run processed successfully: {run}")
+            except Exception as e:
+                logger.exception(f"Run failed: {e}")
+                # move to error dir
+
 
     def copy_libraries(self):
         self.touch_all_files(self.sequencing_libraries_folder)
@@ -52,11 +57,15 @@ class Processor:
                     os.path.join(self.destination_folder, run_name))
 
     def _initialize_based_on_record_type(self, full_run_path) -> (FileRemover, RunPseudonymizer):
+        logger = LoggingConfig.get_logger()
         if "SoftwareVersionsFile.csv" in os.listdir(full_run_path) or "Alignment_1" in os.listdir(full_run_path):
+            logger.info(f"Run {full_run_path} processed as NewMiseq")
             pseudonymizer = NewMiseqPseudonymizer(full_run_path, self.pseudonymization_tables_folder)
         elif self._is_next_seq_based_on_run_parameters(full_run_path):
+            logger.info(f"Run {full_run_path} processed as NextSeq")
             pseudonymizer = NextSeqPseudonymizer(full_run_path, self.pseudonymization_tables_folder)
         else:
+            logger.info(f"Run {full_run_path} processed as OldMiseq")
             pseudonymizer = OldMiseqPseudonymizer(full_run_path, self.pseudonymization_tables_folder)
 
         return pseudonymizer

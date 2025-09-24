@@ -17,9 +17,11 @@ class PseudonymizePredictive:
     def pseudonymize(self, pred_number) -> str:
         pseudo_number = self._check_if_already_has_pred_number(pred_number)
         if pseudo_number:
+            self.logger.info(f"Predictive number {pred_number} already has pseudonym {pseudo_number}")
             return pseudo_number
         else:
             pseudo_number = self._generate_pseudo_number()
+            self.logger.info(f"Generated new pseudonym {pseudo_number} for predictive number {pred_number}")
             self.__add_new_pseudo_number_to_file(pred_number, pseudo_number)
             self.__add_new_pseudo_number_to_db(pred_number, pseudo_number)
             return pseudo_number
@@ -77,14 +79,14 @@ class PseudonymizePredictive:
             pseudo_list.append(sample)
             data["predictive"] = pseudo_list
             json.dump(data, output, indent=4)
-            self.logger.info("New predictive number was added to outputfile")
+            self.logger.info(f"New predictive number {pseudo_number} was added to outputfile")
 
 
     def __add_new_pseudo_number_to_db(self, predictive_number, pseudo_number):
         new_data = {"predictive_ID": predictive_number, "predictive_pseudo_ID": pseudo_number}
         res = requests.post(f"{self.predictive_pseudo_API}", json=new_data)
         if res.status_code == 200:
-            self.logger.info("New predictive number was sucessfully uploaded to DB with API")
+            self.logger.info(f"New predictive number {pseudo_number} was sucessfully uploaded to DB with API")
         else:
             self.logger.warning(f"Could not upload new predictive_ID: {predictive_number} and its pseudonym: {pseudo_number}"
                             f". Got {res.status_code} when uploading data")

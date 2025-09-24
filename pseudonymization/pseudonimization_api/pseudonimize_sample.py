@@ -52,12 +52,13 @@ class PseudonymizeSample:
             pseudo_list.append(sample)
             data["samples"] = pseudo_list
             json.dump(data, output, indent=4)
-            self.logger.info("New sample_ID was added to outputfile")
+            self.logger.info(f"New sample number {pseudo_number} was added to outputfile")
 
     def __add_new_sample_number_to_db(self, pseudo_number):
         new_data = {"sample_ID": self.sample_number, "pseudo_sample_ID": pseudo_number}
         res = requests.post(f"{self.sample_pseudo_API}", json=new_data)
         if res.status_code == 200:
-            self.logger.info("New patient number was sucessfully uploaded to DB with API")
+            self.logger.info(f"New sample number {pseudo_number} was sucessfully uploaded to DB with API")
         else:
-            self.logger.warning(f"Could not upload new sample_ID: {self.sample_number} and its pseudonym: {pseudo_number}")
+            self.logger.warning(f"Could not upload new sample_ID: {self.sample_number} and its pseudonym: {pseudo_number}"
+                            f". Got {res.status_code} when uploading data")

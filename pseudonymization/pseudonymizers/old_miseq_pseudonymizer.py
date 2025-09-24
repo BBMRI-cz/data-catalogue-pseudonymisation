@@ -26,10 +26,18 @@ class OldMiseqPseudonymizer(RunPseudonymizer):
 
     def pseudonymize(self):
         pred_pseudo_tuples = self._get_all_predictive_numbers_pseudonymize_sample_sheet()
+        self.logger.debug(f"Predictive/pseudonym tuples generated: {pred_pseudo_tuples}")
+
         OldMiSEQRemover(self.run_path).remove_files()
+        self.logger.info(f"Unnecessary files removed")
+
         for pred, pseudo in pred_pseudo_tuples:
             self._pseudonymize_files_with_pred_numbers(pred, pseudo)
+            self.logger.info(f"Files and directories renamed for predictive number {pred} -> {pseudo}")
+
             self._try_pseudonimize_content_of_files(pred, pseudo)  # This needs to run after the _pseudo_files_names_req
+            self.logger.info(f"Contents of files renamed for predictive number {pred} -> {pseudo}")
+
             clinical_data = ClinicalInfoFinder(self.run_path).collect_data(pred)
 
             if clinical_data:
@@ -37,6 +45,8 @@ class OldMiseqPseudonymizer(RunPseudonymizer):
                 self._save_clinical_data(clinical_data_for_saving,
                                          os.path.join(self.run_path, "catalog_info_per_pred_number"),
                                          pseudo)
+
+                self.logger.info(f"Clinical data saved to {os.path.join(self.run_path, "catalog_info_per_pred_number")}/{pseudo}")
 
     def _get_all_predictive_numbers_pseudonymize_sample_sheet(self) -> list[tuple[str, str]]:
         sample_sheet_path = os.path.join(self.run_path, "SampleSheet.csv")

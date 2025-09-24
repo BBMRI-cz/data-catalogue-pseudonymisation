@@ -13,12 +13,21 @@ class NewMiseqPseudonymizer(OldMiseqPseudonymizer):
 
     def pseudonymize(self):
         pred_pseudo_tuples = self._get_all_predictive_numbers_pseudonymize_sample_sheet()
+        self.logger.debug(f"Predictive/pseudonym tuples generated: {pred_pseudo_tuples}")
+
         self._move_alignmant_data_from_unknown_folder()
+        self.logger.info(f"Moved data from unknown folder")
+
         NewMiSEQRemover(self.run_path).remove_files()
+        self.logger.info(f"Unnecessary files removed")
 
         for pred, pseudo in pred_pseudo_tuples:
             self._pseudonymize_files_with_pred_numbers(pred, pseudo)
+            self.logger.info(f"Files and directories renamed for predictive number {pred} -> {pseudo}")
+
             self._try_pseudonimize_content_of_files(pred, pseudo)
+            self.logger.info(f"Contents of files renamed for predictive number {pred} -> {pseudo}")
+
             clinical_data = ClinicalInfoFinder(self.run_path).collect_data(pred)
 
             if clinical_data:
@@ -26,7 +35,7 @@ class NewMiseqPseudonymizer(OldMiseqPseudonymizer):
                 self._save_clinical_data(clinical_data_for_saving,
                                          os.path.join(self.run_path, "catalog_info_per_pred_number"),
                                          pseudo)
-                self.logger.debug(f"Clinical data saved to in catalog_inf_per_pred_number/{pseudo}")
+                self.logger.info(f"Clinical data saved to {os.path.join(self.run_path, "catalog_info_per_pred_number")}/{pseudo}")
 
     def _try_pseudonimize_content_of_files(self, pred_number, pseudo_pred_number):
         subprocess.call(["pseudonymization/helpers/replace_predictive_new_miseq.sh",
