@@ -46,7 +46,7 @@ class OldMiseqPseudonymizer(RunPseudonymizer):
                                          os.path.join(self.run_path, "catalog_info_per_pred_number"),
                                          pseudo)
 
-                self.logger.info(f"Clinical data saved to {os.path.join(self.run_path, "catalog_info_per_pred_number")}/{pseudo}")
+                self.logger.info(f"Clinical data saved to {os.path.join(self.run_path, 'catalog_info_per_pred_number')}/{pseudo}")
 
     def _get_all_predictive_numbers_pseudonymize_sample_sheet(self) -> list[tuple[str, str]]:
         sample_sheet_path = os.path.join(self.run_path, "SampleSheet.csv")
