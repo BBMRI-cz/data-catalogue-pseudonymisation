@@ -40,7 +40,7 @@ class NextSeqPseudonymizer(RunPseudonymizer):
                 self._save_clinical_data(clinical_data_for_saving,
                                          os.path.join(self.run_path, "catalog_info_per_pred_number"),
                                          pseudo)
-                self.logger.info(f"Clinical data saved to {os.path.join(self.run_path, "catalog_info_per_pred_number")}/{pseudo}")
+                self.logger.info(f"Clinical data saved to {os.path.join(self.run_path, 'catalog_info_per_pred_number')}/{pseudo}")
 
 
     def _pseudonymize_files_with_pred_numbers(self, pred_number, pseudo_number):
