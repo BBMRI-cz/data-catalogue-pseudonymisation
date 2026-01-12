@@ -1,0 +1,22 @@
+services:
+  run:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    user: "1005:1002"
+    environment:
+      PSEUDONYMIZATION_API: http://172.16.127.250:8081
+      EXPORT_API: http://172.16.55.182:8080
+      LOG_LEVEL: DEBUG
+    volumes:
+      - /muni-sc/test/:/sc
+      - /seq/NO-BACKUP-SPACE/test/:/seq
+      - /home/export/pseudonymization_table/:/pseudo_tables
+    command: >
+      bash -c "python main.py
+      -s /seq/TRANSFER/
+      -d /sc/PSEUDONYMIZED/
+      -t /pseudo_tables
+      -l /seq/Libraries
+      -lsc /sc/Libraries
+      --log_dir /seq/logs"
