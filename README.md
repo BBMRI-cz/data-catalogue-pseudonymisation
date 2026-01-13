@@ -9,7 +9,7 @@ Pseudonymizes predictive numbers, collects clinical data and removes unnecessary
 Miseq, New Miseq, MammaPrint
 
 ## How to run the scripts
-### Locally - Development
+### Dev environment
 #### Using main.py
 1. Install requirements
 ```bash
@@ -23,15 +23,44 @@ python main.py -s /path/to/runs/for/pseudonymization -d /path/to/sensitive/cloud
 ```
 #### Using docker-compose
 ```bash
-docker-compose up -f compose.dev.yml -d --build
+docker compose up -f compose.dev.yml -d --build
 ```
+### Test environment
+#### Folder structure
+/seq/NO-BACKUP-SPACE/test/\
+├── Libraries/     # Required library files for pseudonymisation\
+├── logs/          # Logs from test runs\
+└── TRANSFER/      # Input data to be pseudonymized
+
+
+#### Running a Test
+1. Copy the run you want to test into */test/TRANSFER/:
+```
+cp -a /path/to/original/run/ /seq/NO-BACKUP-SPACE/test/TRANSFER/
+```
+2. Switch to export user and navigate to script folder:
+```
+su export
+cd ~/data-catalogue-pseudonymisation
+```
+3. Start the pseudonymization script:
+```
+docker compose -f compose.test.yml up --build 
+```
+#### Viewing logs
+Logs for each run are in the `/seq/NO-BACKUP-SPACE/test/logs` directory.
+To view all service logs:
+```
+docker compose -f compose.test.yml logs
+```
+
 ### In production
 #### Using docker-compose
 ```bash
 # connect to seq server
 su export
 cd /home/export/data-catalogue-pseudonymisation
-docker-compose up -f compose.prod.yml -d
+docker compose up -f compose.prod.yml --build -d
 ```
 #### Deployment in cron
 ```bash
