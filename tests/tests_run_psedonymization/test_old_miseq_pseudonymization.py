@@ -76,9 +76,32 @@ def test_prepare_clinical_data_for_saving_non_empty(mocker,
     fake_OK_patient_pseudo_response = _generate_fake_OK_http_response(mocker, get_patient_psuedo_api_request)
     fake_OK_sample_pseudo_response = _generate_fake_OK_http_response(mocker, get_sample_pseudo_api_request)
 
-    mocker.patch("pseudonymization.pseudonimization_api.pseudonimize_sample.requests.get",
-                  side_effect=[fake_OK_sample_pseudo_response, fake_OK_patient_pseudo_response])
+    def fake_get(url, *args, **kwargs):
+        if "/health" in url:
+            resp = mocker.Mock()
+            resp.status_code = 200
+            resp.raise_for_status.return_value = None
+            resp.json.return_value = {}
+            return resp
+        elif "/sample/" in url:
+            resp = mocker.Mock()
+            resp.status_code = 200
+            resp.raise_for_status.return_value = None
+            resp.json.return_value = get_sample_pseudo_api_request
+            return resp
+        elif "/patient/" in url:
+            resp = mocker.Mock()
+            resp.status_code = 200
+            resp.raise_for_status.return_value = None
+            resp.json.return_value = get_patient_psuedo_api_request
+            return resp
+        else:
+            raise RuntimeError(f"Unexpected URL: {url}")
 
+    mocker.patch(
+        "pseudonymization.pseudonimization_api.pseudonimize_sample.requests.get",
+        side_effect=fake_get
+    )
     pseudonimizer = OldMiseqPseudonymizer(FAKE_RUN_FOR_TESTING, PSEUDONYMIZATION_FILES_FOLDER)
     random_pseudo_number = "mmci_predictive_12345678-1234-5678-1234-567812345621"
     clinical_data_dict = generate_clinical_data_from_clinical_info_finder
@@ -99,14 +122,41 @@ def test_save_clinical_data(mocker,
     fake_OK_patient_pseudo_response = _generate_fake_OK_http_response(mocker, get_patient_psuedo_api_request)
     fake_OK_sample_pseudo_response = _generate_fake_OK_http_response(mocker, get_sample_pseudo_api_request)
 
-    mocker.patch("pseudonymization.pseudonimization_api.pseudonimize_sample.requests.get",
-                 side_effect=[fake_OK_sample_pseudo_response,
-                              fake_OK_sample_pseudo_response,
-                              fake_OK_patient_pseudo_response])
-    mocker.patch("pseudonymization.pseudonimization_api.pseudonimize_sample.requests.get",
-                 side_effect=[fake_OK_sample_pseudo_response,
-                              fake_OK_sample_pseudo_response,
-                              fake_OK_patient_pseudo_response])
+    def fake_get(url, *args, **kwargs):
+        if "/health" in url:
+            resp = mocker.Mock()
+            resp.status_code = 200
+            resp.raise_for_status.return_value = None
+            resp.json.return_value = {}
+            return resp
+
+        elif "/sample/" in url:
+            resp = mocker.Mock()
+            resp.status_code = 200
+            resp.raise_for_status.return_value = None
+            resp.json.return_value = {
+                "sample_ID": "BBM:2021:111:2",
+                "sample_pseudo_ID": "mmci_sample_12345678-1234-5678-1234-567812345621"
+            }
+            return resp
+
+        elif "/patient/" in url:
+            resp = mocker.Mock()
+            resp.status_code = 200
+            resp.raise_for_status.return_value = None
+            resp.json.return_value = {
+                "patient_id": "111111",
+                "patient_pseudo_ID": "mmci_patient_12345678-1234-5678-1234-567812345621"
+            }
+            return resp
+
+        else:
+            raise RuntimeError(f"Unexpected URL: {url}")
+
+    mocker.patch(
+        "pseudonymization.pseudonimization_api.pseudonimize_sample.requests.get",
+        side_effect=fake_get
+    )
 
     serum_predictive_pseudo_id = "mmci_predictive_12345678-1234-5678-1234-567812345688"
     tissue_predictive_psuedo_id = "mmci_predictive_12345678-1234-5678-1234-567812345689"

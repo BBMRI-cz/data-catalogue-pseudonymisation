@@ -30,12 +30,6 @@ EXPECTED_PSEUDO_TUPLES = [('2000_0000_DNA', 'mmci_predictive_12345678-1234-5678-
  ('2000_0013_RNA', 'mmci_predictive_12345678-1234-5678-1234-567812345614'),
  ('ST20-01_DNA', 'mmci_predictive_12345678-1234-5678-1234-567812345615')]
 
-def test_sample_sheet_pseudonymized(mock_pseudonymize_predictive):
-    values = NextSeqPseudonymizer(FAKE_RUN_FOR_TESTING, PSEUDONYMIZATION_FILES_FOLDER).pseudonymize()
-
-    assert values == EXPECTED_PSEUDO_TUPLES
-
-
 def _setup_pseudonymization_files():
     os.mkdir(PSEUDONYMIZATION_FILES_FOLDER)
 

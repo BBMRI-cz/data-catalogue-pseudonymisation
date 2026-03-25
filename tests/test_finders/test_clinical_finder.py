@@ -5,6 +5,13 @@ from pseudonymization.finders.clinical_finder import ClinicalInfoFinder
 TEST_RUN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "old_miseq_test_run")
 
 
+from pseudonymization.logging_config.logging_config import LoggingConfig
+
+@pytest.fixture(autouse=True)
+def initialize_logger(tmp_path):
+    LoggingConfig.initialize("pytest", tmp_path)
+
+
 @pytest.fixture
 def empty_specimen_api_mock():
     return []
@@ -29,7 +36,6 @@ def two_tissues_specimen_api_mock():
             "ptnm":"TXN3M","retrieved":"RetrievalType.operational",
             "sample_id":"BBM:2021:111:55","samples_no":1,"type":"Tissue"
         }]
-
 
 @pytest.fixture
 def no_patient_api_mock():
@@ -107,7 +113,30 @@ def test_non_existing_patient_number_clinical_data_api(mocker, no_patient_api_mo
 def test_non_empty_collect_clinical_data_based_on_pred_number_better(mocker, two_tissues_specimen_api_mock, one_patient_api_mock):
     fake_response_samples = _generate_fake_OK_http_response(mocker, two_tissues_specimen_api_mock)
     fake_response_patient = _generate_fake_OK_http_response(mocker, one_patient_api_mock)
-    mocker.patch("pseudonymization.finders.clinical_finder.requests.get", side_effect=[fake_response_samples, fake_response_patient])
+
+
+    def fake_get(url, *args, **kwargs):
+            if "/health" in url:
+                resp = mocker.Mock()
+                resp.status_code = 200
+                resp.raise_for_status.return_value = None
+                resp.json.return_value = {}
+                return resp
+            elif "/specimen/" in url:
+                resp = mocker.Mock()
+                resp.status_code = 200
+                resp.raise_for_status.return_value = None
+                resp.json.return_value = two_tissues_specimen_api_mock
+                return resp
+            elif "/patient/" in url:
+                resp = mocker.Mock()
+                resp.status_code = 200
+                resp.raise_for_status.return_value = None
+                resp.json.return_value = one_patient_api_mock
+                return resp
+            else:
+                raise RuntimeError(f"Unexpected URL: {url}")
+    mocker.patch("pseudonymization.finders.clinical_finder.requests.get", side_effect=fake_get)
 
     response = ClinicalInfoFinder(TEST_RUN_PATH).collect_data("2022-1111")
 
