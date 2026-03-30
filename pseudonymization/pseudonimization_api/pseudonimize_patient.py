@@ -5,16 +5,14 @@ import json
 from pseudonymization.config.config_processor import ConfigProcessor
 from pseudonymization.logging_config.logging_config import LoggingConfig
 
+
 class PseudonymizePatient:
 
-    def __init__(self,
-                 patient_number,
-                 path_to_patient_pseudo_table_file):
+    def __init__(self, patient_number, path_to_patient_pseudo_table_file):
         self.patient_number = patient_number
         self.pseudo_table_file_path = path_to_patient_pseudo_table_file
         self.patient_pseudo_API = f"{ConfigProcessor().get_pseudo_API()}/patient"
         self.logger = LoggingConfig.get_logger()
-
 
     def __call__(self) -> str:
         pseudo_number = self._check_if_already_has_patient_number()
@@ -26,7 +24,6 @@ class PseudonymizePatient:
             self.__add_new_patient_number_to_db(pseudo_number)
             return pseudo_number
 
-
     def _check_if_already_has_patient_number(self):
         req = requests.get(f"{self.patient_pseudo_API}/{self.patient_number}")
         if req.status_code == 200:
@@ -36,33 +33,42 @@ class PseudonymizePatient:
             else:
                 return None
 
-
     def _generate_patient_number(self):
         return "mmci_patient_" + str(uuid.uuid4())
-    
 
     def __add_new_patient_number_to_file(self, pseudo_number):
-        data = {"patients":[]}
+        data = {"patients": []}
         if os.path.exists(self.pseudo_table_file_path):
-            with open(self.pseudo_table_file_path, 'r') as json_file:
+            with open(self.pseudo_table_file_path, "r") as json_file:
                 data = json.load(json_file)
                 pseudo_list = data["patients"]
         else:
             pseudo_list = []
 
-        with open(self.pseudo_table_file_path, 'w+') as output:
-            sample = {"patient_ID": self.patient_number, "patient_pseudo_ID": pseudo_number}
+        with open(self.pseudo_table_file_path, "w+") as output:
+            sample = {
+                "patient_ID": self.patient_number,
+                "patient_pseudo_ID": pseudo_number,
+            }
             pseudo_list.append(sample)
             data["patients"] = pseudo_list
             json.dump(data, output, indent=4)
-            self.logger.info(f"New patient number {pseudo_number} was added to outputfile")
-
+            self.logger.info(
+                f"New patient number {pseudo_number} was added to outputfile"
+            )
 
     def __add_new_patient_number_to_db(self, pseudo_number):
-        new_data = {"patient_ID": str(self.patient_number), "patient_pseudo_ID": pseudo_number}
+        new_data = {
+            "patient_ID": str(self.patient_number),
+            "patient_pseudo_ID": pseudo_number,
+        }
         res = requests.post(f"{self.patient_pseudo_API}", json=new_data)
         if res.status_code == 200:
-            self.logger.info(f"New patient number {pseudo_number} was sucessfully uploaded to DB with API")
+            self.logger.info(
+                f"New patient number {pseudo_number} was sucessfully uploaded to DB with API"
+            )
         else:
-            self.logger.warning(f"Could not upload new patient_ID: {self.patient_number} and its pseudonym: {pseudo_number}"
-                            f". Got {res.status_code} when uploading data")
+            self.logger.warning(
+                f"Could not upload new patient_ID: {self.patient_number} and its pseudonym: {pseudo_number}"
+                f". Got {res.status_code} when uploading data"
+            )

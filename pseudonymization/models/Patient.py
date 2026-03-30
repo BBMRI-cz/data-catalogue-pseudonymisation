@@ -5,7 +5,7 @@ from ..helpers.datetime_helpers import covert_str_to_datetime
 
 class Patient:
     """
-    Class defining an pseudonimized patient that gave concent to the 
+    Class defining an pseudonimized patient that gave concent to the
     BBM of MMCI that his material and data can be used for research
 
     Attributes
@@ -30,13 +30,11 @@ class Patient:
         if isinstance(other, Patient):
             return self.ID == other.ID
         return False
-    
+
     def serialize(self):
         return {
             "ID": self.ID,
             "birth": self.birth.strftime("%d/%m/%Y"),
             "sex": self.sex,
-            "samples": [sample.serialize() for sample in self.samples]
+            "samples": [sample.serialize() for sample in self.samples],
         }
-    
-    

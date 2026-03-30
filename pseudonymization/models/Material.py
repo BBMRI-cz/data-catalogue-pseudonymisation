@@ -3,7 +3,8 @@ from ..pseudonimization_api.pseudonimize_sample import PseudonymizeSample
 
 class Material:
     """
-    Parent class for all the different materials present in the LTS (Long term Storage) of MMCI Biobank
+    Parent class for all the different materials 
+    present in the LTS (Long term Storage) of MMCI Biobank
 
     Attributes
     ----------
@@ -17,14 +18,16 @@ class Material:
         number of the sample stored
     available_samples_number: str
         number of available sample stored
-    material_type: str 
+    material_type: str
         an integer defining what type of material is the sample
     """
 
     def __init__(self, sample_dict, pseudo_number, pseudo_sample_file):
         self.pseudo_ID = pseudo_number
         self.biopsy_number = sample_dict["biopsy_id"]
-        self.sample_ID = PseudonymizeSample(sample_dict["sample_id"], pseudo_sample_file)()
+        self.sample_ID = PseudonymizeSample(
+            sample_dict["sample_id"], pseudo_sample_file
+        )()
         self.sample_number = sample_dict["samples_no"]
         self.available_samples_number = sample_dict["available_samples_no"]
         self.material_type = sample_dict["material_type_id"]
@@ -39,7 +42,7 @@ class Material:
 
     def __str__(self) -> str:
         return f"{self.sample_ID}"
-    
+
     def serialize(self) -> dict:
         return {
             "pseudo_ID": self.pseudo_ID,

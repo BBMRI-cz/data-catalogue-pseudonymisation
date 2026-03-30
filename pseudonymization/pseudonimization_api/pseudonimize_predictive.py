@@ -6,10 +6,10 @@ import re
 from pseudonymization.config.config_processor import ConfigProcessor
 from pseudonymization.logging_config.logging_config import LoggingConfig
 
+
 class PseudonymizePredictive:
 
-    def __init__(self,
-                 path_to_predictive_pseudo_table_file):
+    def __init__(self, path_to_predictive_pseudo_table_file):
         self.pseudo_table_file_path = path_to_predictive_pseudo_table_file
         self.predictive_pseudo_API = f"{ConfigProcessor().get_pseudo_API()}/predictive"
         self.logger = LoggingConfig.get_logger()
@@ -17,17 +17,21 @@ class PseudonymizePredictive:
     def pseudonymize(self, pred_number) -> str:
         pseudo_number = self._check_if_already_has_pred_number(pred_number)
         if pseudo_number:
-            self.logger.info(f"Predictive number {pred_number} already has pseudonym {pseudo_number}")
+            self.logger.info(
+                f"Predictive number {pred_number} already has pseudonym {pseudo_number}"
+            )
             return pseudo_number
         else:
             pseudo_number = self._generate_pseudo_number()
-            self.logger.info(f"Generated new pseudonym {pseudo_number} for predictive number {pred_number}")
+            self.logger.info(
+                f"Generated new pseudonym {pseudo_number} for predictive number {pred_number}"
+            )
             self.__add_new_pseudo_number_to_file(pred_number, pseudo_number)
             self.__add_new_pseudo_number_to_db(pred_number, pseudo_number)
             return pseudo_number
 
     def _correct_pred_number_format(self, pred_number: str) -> str:
-            # matching 2022-1234 ([whole_year]-[number])
+        # matching 2022-1234 ([whole_year]-[number])
         if re.match(r"^20[1-2][\d]-[\d]{1,4}", pred_number):
             year, id = pred_number.split("-", 1)
             return f"{id}-{year[2:]}"
@@ -60,33 +64,42 @@ class PseudonymizePredictive:
             if data:
                 return data["predictive_pseudo_ID"]
 
-
     def _generate_pseudo_number(self):
         return "mmci_predictive_" + str(uuid.uuid4())
-    
 
     def __add_new_pseudo_number_to_file(self, predictive_number, pseudo_number):
-        data = {"predictive":[]}
+        data = {"predictive": []}
         if os.path.exists(self.pseudo_table_file_path):
-            with open(self.pseudo_table_file_path, 'r') as json_file:
+            with open(self.pseudo_table_file_path, "r") as json_file:
                 data = json.load(json_file)
                 pseudo_list = data["predictive"]
         else:
             pseudo_list = []
 
-        with open(self.pseudo_table_file_path, 'w+') as output:
-            sample = {"predictive_number": predictive_number, "pseudo_number": pseudo_number}
+        with open(self.pseudo_table_file_path, "w+") as output:
+            sample = {
+                "predictive_number": predictive_number,
+                "pseudo_number": pseudo_number,
+            }
             pseudo_list.append(sample)
             data["predictive"] = pseudo_list
             json.dump(data, output, indent=4)
-            self.logger.info(f"New predictive number {pseudo_number} was added to outputfile")
-
+            self.logger.info(
+                f"New predictive number {pseudo_number} was added to outputfile"
+            )
 
     def __add_new_pseudo_number_to_db(self, predictive_number, pseudo_number):
-        new_data = {"predictive_ID": predictive_number, "predictive_pseudo_ID": pseudo_number}
+        new_data = {
+            "predictive_ID": predictive_number,
+            "predictive_pseudo_ID": pseudo_number,
+        }
         res = requests.post(f"{self.predictive_pseudo_API}", json=new_data)
         if res.status_code == 200:
-            self.logger.info(f"New predictive number {pseudo_number} was sucessfully uploaded to DB with API")
+            self.logger.info(
+                f"New predictive number {pseudo_number} was sucessfully uploaded to DB with API"
+            )
         else:
-            self.logger.warning(f"Could not upload new predictive_ID: {predictive_number} and its pseudonym: {pseudo_number}"
-                            f". Got {res.status_code} when uploading data")
+            self.logger.warning(
+                f"Could not upload new predictive_ID: {predictive_number} and its pseudonym: {pseudo_number}"
+                f". Got {res.status_code} when uploading data"
+            )
