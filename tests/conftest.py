@@ -1,6 +1,7 @@
 import pytest
 import os
 
+
 @pytest.fixture(autouse=True)
 def mock_config_healthcheck(mocker, monkeypatch):
     monkeypatch.setenv("PSEUDONYMIZATION_API", "http://fake-api")
@@ -11,7 +12,5 @@ def mock_config_healthcheck(mocker, monkeypatch):
     fake_resp.status_code = 200
 
     mocker.patch(
-        "pseudonymization.config.config_processor.requests.get",
-        return_value=fake_resp
+        "pseudonymization.config.config_processor.requests.get", return_value=fake_resp
     )
-
