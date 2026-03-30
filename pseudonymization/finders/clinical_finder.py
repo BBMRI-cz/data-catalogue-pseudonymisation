@@ -12,11 +12,15 @@ class ClinicalInfoFinder:
         self.logger = LoggingConfig.get_logger()
 
     def collect_data(self, predictive_number: str) -> dict | None:
-        fixed_pred_number = self._fix_pred_number_format_for_export(predictive_number)  # 2022-1234 format
+        fixed_pred_number = self._fix_pred_number_format_for_export(
+            predictive_number
+        )  # 2022-1234 format
         if fixed_pred_number:
             clinical_data = self._get_clinical_data_from_pred_number(fixed_pred_number)
             if clinical_data:
-                self.logger.info(f"Clinical data found for predictive number {predictive_number}")
+                self.logger.info(
+                    f"Clinical data found for predictive number {predictive_number}"
+                )
                 patient_id = clinical_data[0]["patient_id"]
                 patient = self._get_patient_dict_based_on_sample_data(patient_id)
                 if patient:
@@ -24,9 +28,14 @@ class ClinicalInfoFinder:
                     patient["samples"] = clinical_data
                     return patient
                 else:
-                    self.logger.info(f"No patient info found for patient id {patient_id}, skipping clinical data")
+                    self.logger.info(
+                        f"No patient info found for patient id {patient_id}, "
+                        "skipping clinical data"
+                    )
             else:
-                self.logger.info(f"No clinical data found for predictive number {predictive_number}")
+                self.logger.info(
+                    f"No clinical data found for predictive number {predictive_number}"
+                )
         return None
 
     def _fix_pred_number_format_for_export(self, pred_number: str) -> str | None:
@@ -62,11 +71,11 @@ class ClinicalInfoFinder:
             data = res.json()
             if data:
                 return data
-            else: 
+            else:
                 return None
         else:
             return None
-        
+
     def _get_patient_dict_based_on_sample_data(self, patient_id: str) -> dict | None:
         res = requests.get(f"{self.EXPORT_API}/patient/{patient_id}")
         if res.status_code == 200:

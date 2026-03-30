@@ -32,7 +32,7 @@ class Serum(Material):
             return True
         if isinstance(other, Serum):
             return other.taking_date < self.taking_date
-        
+
     def serialize(self) -> dict:
         sample_dict = super().serialize()
         sample_dict["material"] = self.material

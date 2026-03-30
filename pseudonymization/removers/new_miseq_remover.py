@@ -22,7 +22,7 @@ class NewMiSEQRemover(FileRemover):
             "ImageAnalysis_Netcopy_complete_Read2.txt",
             "RTAComplete.txt",
             "QueuedForAnalysis.txt",
-            "Recipe"
+            "Recipe",
         ]
 
         for file_path in paths_to_remove:

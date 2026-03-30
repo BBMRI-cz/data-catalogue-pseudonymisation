@@ -1,6 +1,7 @@
 import os
 import requests
 
+
 class ConfigProcessor:
     def __init__(self):
         self.pseudo_api = os.getenv("PSEUDONYMIZATION_API")

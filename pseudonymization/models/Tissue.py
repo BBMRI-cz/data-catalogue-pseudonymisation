@@ -39,12 +39,12 @@ class Tissue(Material):
 
     def __repr__(self) -> str:
         return f"{self.sample_ID}"
-    
+
     def __lt__(self, other) -> bool:
         if isinstance(other, Tissue):
             return int(self.material_type) < int(other.material_type)
         return True
-    
+
     def serialize(self) -> dict:
         sample_dict = super().serialize()
         sample_dict["material"] = self.material
